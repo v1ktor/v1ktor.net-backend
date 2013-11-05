@@ -11,11 +11,13 @@ class FrontController
     private $params        = array();
     private $basePath      = "v1ktor.net/";
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->parseUri();
     }
     
-    private function parseUri() {
+    private function parseUri()
+    {
         $path = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), "/");
         $path = preg_replace('/[^a-zA-Z0-9]\//', "", $path);
         //if (strpos($path, $this->basePath) === 0) {
@@ -38,19 +40,23 @@ class FrontController
 
     }
 
-    public function getController() {
+    public function getController()
+    {
         return $this->controller;
     }
 
-    public function getAction() {
+    public function getAction()
+    {
         return $this->action;
     }
 
-    public function getParams() {
+    public function getParams()
+    {
         return $this->params;
     }
 
-    public function setController($controller) {
+    public function setController($controller)
+    {
         $controller = ucfirst(strtolower($controller)) . "Controller";
         $class = '\\v1ktor\\app\\controllers\\'.$controller;
         if (!class_exists($class) || $controller === "FrontController") {
@@ -61,7 +67,8 @@ class FrontController
         return $this;
     }
     
-    public function setAction($action) {
+    public function setAction($action)
+    {
         $reflector = new \ReflectionClass($this->controller);
         if (!$reflector->hasMethod($action)) {
             throw new \InvalidArgumentException(
@@ -71,13 +78,15 @@ class FrontController
         return $this;
     }
     
-    public function setParams(array $params) {
+    public function setParams(array $params)
+    {
         $this->params = $params;
         return $this;
     }
 
 
-    public function run() {
+    public function run()
+    {
         $class = '\\v1ktor\\app\\controllers\\'.$this->controller;
         call_user_func_array(array(new $class, $this->action), $this->params);
     }
